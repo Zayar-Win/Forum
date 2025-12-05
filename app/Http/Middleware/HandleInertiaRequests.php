@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -32,8 +33,9 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user(), //logged in user -> $page.props.auth.user
             ],
+            "latest_questions" => Question::latest()->take(5)->get()
         ];
     }
 }

@@ -68,8 +68,11 @@
               >
                 {{ $page.props.auth.user.name.charAt(0) }}
               </div>
-              <span>{{ $page.props.auth.user.name }}</span>
+              <span>{{ $page.props.auth.user.name }} </span>
             </Link>
+            <form @submit.prevent="logout">
+              <button type="submit" class="text-white bg-red-500 text-sm px-2 py-1 rounded-xl">logout</button>
+            </form>
           </template>
           <template v-else>
             <Link
@@ -168,10 +171,12 @@
           <div
             class="bg-[#f1e05a]/10 border-b border-[#f1e05a]/20 px-4 py-2 font-bold text-[#c9d1d9] text-[12px] uppercase tracking-wide"
           >
-            The Overflow Blog
+            The Recent Questions
           </div>
           <ul class="list-none p-0 bg-[#0d1117]/30">
             <li
+              v-for="question in $page.props.latest_questions"
+              :key="question.id"
               class="flex items-start gap-2 px-3 py-2.5 hover:bg-[#21262d] cursor-pointer transition-colors"
             >
               <svg
@@ -188,29 +193,10 @@
                 ></path>
               </svg>
               <span class="text-[#c9d1d9] leading-snug"
-                >The evolution of the "full-stack" developer</span
+                >{{question.title}}</span
               >
             </li>
-            <li
-              class="flex items-start gap-2 px-3 py-2.5 hover:bg-[#21262d] cursor-pointer transition-colors"
-            >
-              <svg
-                class="w-4 h-4 text-[#8b949e] flex-shrink-0 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                ></path>
-              </svg>
-              <span class="text-[#c9d1d9] leading-snug"
-                >Observability is the key to the future of software</span
-              >
-            </li>
+           
           </ul>
         </div>
 
@@ -308,6 +294,11 @@ export default {
     search() {
         //programatic redirect
         this.$inertia.get("/?query="+this.search)
+    }
+  },
+  methods : {
+    logout(){
+      this.$inertia.post("/logout")
     }
   }
 };
