@@ -9,12 +9,11 @@ class QuestionController extends Controller
 {
     public function index()
     {
-        $search = request('query');
-        if ($search) {
-            $questions = Question::where("title", "LIKE", "%" . $search . "%")->get();
-        } else {
-            $questions = Question::with('user')->latest()->get(); //eager loading
-        }
+        $filters = request(['tag', 'query']); // array
+        $questions = Question::with('user')
+            ->latest()
+            ->filter($filters)
+            ->get();
         return inertia('Welcome', [
             'questions' => $questions
         ]);

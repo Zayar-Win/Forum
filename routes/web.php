@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [QuestionController::class, 'index'])->name('home');
-Route::get('/questions/ask', [QuestionController::class, 'create']);
-Route::post('/questions/store', [QuestionController::class, 'store']);
-Route::get('/questions/{id}', [QuestionController::class, 'show']);
+Route::get('/questions/ask', [QuestionController::class, 'create'])->name('questions.create');
+Route::post('/questions/store', [QuestionController::class, 'store'])->name('questions.store');
+Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

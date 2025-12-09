@@ -71,7 +71,12 @@
               <span>{{ $page.props.auth.user.name }} </span>
             </Link>
             <form @submit.prevent="logout">
-              <button type="submit" class="text-white bg-red-500 text-sm px-2 py-1 rounded-xl">logout</button>
+              <button
+                type="submit"
+                class="text-white bg-red-500 text-sm px-2 py-1 rounded-xl"
+              >
+                logout
+              </button>
             </form>
           </template>
           <template v-else>
@@ -192,11 +197,10 @@
                   d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                 ></path>
               </svg>
-              <span class="text-[#c9d1d9] leading-snug"
-                >{{question.title}}</span
-              >
+              <span class="text-[#c9d1d9] leading-snug">{{
+                question.title
+              }}</span>
             </li>
-           
           </ul>
         </div>
 
@@ -256,25 +260,19 @@
           class="bg-[#161b22] border border-[#30363d] rounded-[3px] p-4 shadow-sm"
         >
           <h4 class="text-[#c9d1d9] font-bold text-[15px] mb-3">
-            Watched Tags
+            Popular Tags
           </h4>
           <div class="flex flex-wrap gap-2">
-            <span
-              class="px-2 py-1 bg-[#1f2d3d] text-[#58a6ff] text-[12px] rounded-[3px] hover:bg-[#2c3e50] cursor-pointer transition-colors"
-              >javascript</span
+            <Link
+              v-for="tag in $page.props.tags"
+              :key="tag.id"
+              :href="'/?tag=' + tag.id"
             >
-            <span
-              class="px-2 py-1 bg-[#1f2d3d] text-[#58a6ff] text-[12px] rounded-[3px] hover:bg-[#2c3e50] cursor-pointer transition-colors"
-              >php</span
-            >
-            <span
-              class="px-2 py-1 bg-[#1f2d3d] text-[#58a6ff] text-[12px] rounded-[3px] hover:bg-[#2c3e50] cursor-pointer transition-colors"
-              >react</span
-            >
-            <span
-              class="px-2 py-1 bg-[#1f2d3d] text-[#58a6ff] text-[12px] rounded-[3px] hover:bg-[#2c3e50] cursor-pointer transition-colors"
-              >tailwindcss</span
-            >
+              <span
+                class="px-2 py-1 bg-[#1f2d3d] text-[#58a6ff] text-[12px] rounded-[3px] hover:bg-[#2c3e50] cursor-pointer transition-colors"
+                >{{ tag.name }}</span
+              >
+            </Link>
           </div>
         </div>
       </aside>
@@ -287,19 +285,19 @@ export default {
   components: { Link },
   data() {
     return {
-        search : ""
-    }
+      search: "",
+    };
   },
   watch: {
     search() {
-        //programatic redirect
-        this.$inertia.get("/?query="+this.search)
-    }
+      //programatic redirect
+      this.$inertia.get("/?query=" + this.search);
+    },
   },
-  methods : {
-    logout(){
-      this.$inertia.post("/logout")
-    }
-  }
+  methods: {
+    logout() {
+      this.$inertia.post("/logout");
+    },
+  },
 };
 </script>

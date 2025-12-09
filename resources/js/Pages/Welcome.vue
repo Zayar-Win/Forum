@@ -21,7 +21,7 @@
           <button
             class="px-3 py-1.5 text-[13px] text-[#c9d1d9] bg-[#21262d] font-medium"
           >
-            Interesting
+            Latest
           </button>
           <button
             class="px-3 py-1.5 text-[13px] text-[#8b949e] hover:bg-[#21262d] hover:text-[#c9d1d9] bg-transparent transition-colors"
@@ -74,7 +74,7 @@
           <h3
             class="text-[17px] font-normal text-[#58a6ff] hover:text-[#79c0ff] mb-1 leading-snug break-words"
           >
-            <Link :href="'/questions/' + question.id">{{
+            <Link :href="route('questions.show',question.id)">{{
               question.title
             }}</Link>
           </h3>

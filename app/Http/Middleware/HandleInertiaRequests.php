@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Question;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,7 +36,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(), //logged in user -> $page.props.auth.user
             ],
-            "latest_questions" => Question::latest()->take(5)->get()
+            "latest_questions" => Question::latest()->take(5)->get(),
+            "tags" => Tag::all()
         ];
     }
 }

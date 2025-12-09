@@ -10,9 +10,30 @@ class Question extends Model
     /** @use HasFactory<\Database\Factories\QuestionFactory> */
     use HasFactory;
 
+    protected $fillable = ['title', 'body', 'user_id'];
+
     // a question belongsTo a user
     public function user()
     {
         return $this->belongsTo(User::class, "user_id");
+    }
+    // a question belongstoMany tags
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function scopeFilter($query, $filters)
+    {
+        if (isset($filters['query'])) {
+            $query->where("title", "LIKE", "%" . $filters['query'] . "%");
+        }
+        if (isset($filters['tag'])) {
+            dd($filters['tag']);
+            // // tag id -> 1 -> question query -> tag id -> questions
+            // $query->whereHas("tags", function ($q) use ($filters) {
+            //     $q->where("id", $filters['tag']);
+            // });
+        }
     }
 }
