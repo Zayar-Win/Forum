@@ -3,7 +3,7 @@
   <div class="p-6">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-[24px] font-semibold text-[#e6edf3] mb-4">Ask a public question</h1>
+      <h1 class="text-[24px] font-semibold text-[#e6edf3] mb-4">{{ question ? "Edit Your" : "Ask a public" }} question</h1>
       
       <!-- Info Box -->
       <div class="bg-[#1f6feb]/10 border border-[#1f6feb]/40 rounded-[3px] p-6">
@@ -107,7 +107,7 @@
           :disabled="form.processing"
           class="bg-[#1f6feb] hover:bg-[#388bfd] text-white text-[13px] font-medium px-4 py-2.5 rounded-[3px] border border-[rgba(240,246,252,0.1)] shadow-sm transition-colors disabled:opacity-50"
         >
-          Post your question
+          {{question ? "Update" : "Post your"}} question
         </button>
         <button
             type="button"
@@ -122,19 +122,25 @@
 
 <script>
 export default {
+  props : {
+    question : Object | null
+  },
   data() {
     return {
       form :this.$inertia.form({
-        title : "",
-        body : "",
+        title : this.question?.title,
+        body : this.question?.body,
         tags : []
       })
     }
   },
   methods : {
     submit(){
-      this.form.post("/questions/store")
-      //backend call
+      if(this.question) {
+        this.form.put("/questions/"+this.question.id+"/update")
+      }else {
+        this.form.post("/questions/store")
+      }
     }
   }
 }

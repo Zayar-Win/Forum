@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
@@ -11,9 +12,14 @@ class QuestionController extends Controller
     {
         $filters = request(['tag', 'query']); // associated array
         $questions = Question::with('user', 'tags')
+            ->withCount("answers")
             ->latest()
             ->filter($filters)
-            ->get();
+            ->paginate(10)
+            ->through(function ($q) {
+                $q->authorize = $q->user_id == auth()->id();
+                return $q;
+            });
         return inertia('Welcome', [
             'questions' => $questions
         ]);
@@ -29,7 +35,32 @@ class QuestionController extends Controller
 
     public function create()
     {
-        return inertia('QuestionCreate');
+        return inertia('QuestionForm');
+    }
+    public function edit(Question $question)
+    {
+        if (!auth()->user()->can("authorize", $question)) {
+            return redirect('/');
+        }
+        return inertia('QuestionForm', [
+            'question' => $question
+        ]);
+    }
+    public function update(Question $question)
+    {
+        if (!auth()->user()->can("authorize", $question)) {
+            return redirect('/');
+        }
+        request()->validate([
+            'title' => "required | min:5",
+            'body' => "required",
+        ]);
+        $data = request()->all();
+        $question->title = $data['title'];
+        $question->body = $data['body'];
+        $question->save();
+
+        return redirect('/');
     }
 
     public function store()
@@ -46,5 +77,14 @@ class QuestionController extends Controller
         $question->save();
 
         return redirect('/');
+    }
+
+    public function destroy(Question $question)
+    {
+        if (!auth()->user()->can("authorize", $question)) {
+            return redirect('/');
+        }
+        $question->delete();
+        return back();
     }
 }
