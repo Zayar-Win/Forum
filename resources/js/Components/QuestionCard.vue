@@ -3,7 +3,7 @@
     <!-- Stats -->
     <div class="flex flex-col items-end gap-1.5 text-[13px] flex-shrink-0 w-[100px] text-[#8b949e]">
       <div class="font-medium text-[#c9d1d9]">
-        <span class="font-bold">0</span> votes
+        <span class="font-bold">{{ question.votes_count }}</span> votes
       </div>
       <div class="font-medium text-[#8b949e] border border-[#30363d] rounded-[3px] px-2 py-0.5">
         <span class="font-bold text-[#c9d1d9]">{{ question.answers_count }}</span> answers

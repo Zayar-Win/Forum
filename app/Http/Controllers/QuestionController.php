@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\Vote;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,7 +13,7 @@ class QuestionController extends Controller
     {
         $filters = request(['tag', 'query']); // associated array
         $questions = Question::with('user', 'tags')
-            ->withCount("answers")
+            ->withCount("answers", 'votes')
             ->latest()
             ->filter($filters)
             ->paginate(10)
@@ -29,7 +30,17 @@ class QuestionController extends Controller
     {
         $question = Question::findOrFail($id);
         return inertia('QuestionDetail', [
-            'question' => $question->load('user', 'tags', 'answers.user')
+            'question' => $question->load([
+                'user',
+                'tags',
+                'answers' => function ($q) {
+                    $q->with('user')
+                        ->withCount(['upvotes', 'downvotes']);
+                }
+            ])->loadCount('upvotes', 'downvotes'),
+            'userVote' => $question->votes()
+                ->where('user_id', auth()->id())
+                ->first()?->value
         ]);
     }
 

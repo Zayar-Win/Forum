@@ -1,25 +1,22 @@
 <template>
+
     <Head :title="question.title" />
 
     <!-- Question Header -->
     <div class="flex justify-between items-start mb-4 p-10">
-        <h1
-            class="text-[27px] text-[#e6edf3] leading-tight break-words mb-2 flex-1 pr-4"
-        >
+        <h1 class="text-[27px] text-[#e6edf3] leading-tight break-words mb-2 flex-1 pr-4">
             {{ question.title }}
         </h1>
         <Link
             href="/questions/ask"
             class="bg-[#1f6feb] hover:bg-[#388bfd] text-white text-[13px] font-medium px-3 py-2 rounded-[3px] border border-[rgba(240,246,252,0.1)] shadow-sm whitespace-nowrap transition-colors flex-shrink-0"
         >
-            Ask Question
+        Ask Question
         </Link>
     </div>
 
     <!-- Meta Row -->
-    <div
-        class="flex flex-wrap gap-4 pb-4 border-b border-[#30363d] text-[13px] text-[#8b949e] mb-6"
-    >
+    <div class="flex flex-wrap gap-4 pb-4 border-b border-[#30363d] text-[13px] text-[#8b949e] mb-6">
         <div>
             <span class="text-[#8b949e]">Asked</span>
             <span class="ml-1 text-[#c9d1d9]">today</span>
@@ -40,11 +37,14 @@
             <!-- Question Area -->
             <div class="flex gap-4">
                 <!-- Voting Sidebar -->
-                <div
-                    class="flex flex-col items-center gap-2 w-10 flex-shrink-0"
-                >
+                <div class="flex flex-col items-center gap-2 w-10 flex-shrink-0">
+                    <div class="text-[21px] font-semibold text-[#c9d1d9]">
+                        {{question.upvotes_count}}
+                    </div>
                     <button
+                        @click="vote('upvote','question')"
                         class="p-2 rounded-full hover:bg-[#21262d] text-[#8b949e] hover:text-[#f78166] transition-colors"
+                        :class="{'text-[#f78166]' : userVote === 'upvote'}"
                     >
                         <svg
                             class="w-9 h-9"
@@ -55,10 +55,12 @@
                         </svg>
                     </button>
                     <div class="text-[21px] font-semibold text-[#c9d1d9]">
-                        0
+                        {{question.downvotes_count}}
                     </div>
                     <button
+                        @click="vote('downvote','question')"
                         class="p-2 rounded-full hover:bg-[#21262d] text-[#8b949e] hover:text-[#f78166] transition-colors"
+                        :class="{'text-[#f78166]' : userVote === 'downvote'}"
                     >
                         <svg
                             class="w-9 h-9"
@@ -69,9 +71,7 @@
                         </svg>
                     </button>
 
-                    <button
-                        class="mt-2 p-2 hover:bg-[#21262d] rounded text-[#8b949e] hover:text-[#c9d1d9]"
-                    >
+                    <button class="mt-2 p-2 hover:bg-[#21262d] rounded text-[#8b949e] hover:text-[#c9d1d9]">
                         <svg
                             class="w-5 h-5"
                             fill="none"
@@ -90,9 +90,7 @@
 
                 <!-- Post Content -->
                 <div class="flex-1 min-w-0">
-                    <div
-                        class="prose prose-invert max-w-none text-[15px] text-[#c9d1d9] leading-relaxed mb-6"
-                    >
+                    <div class="prose prose-invert max-w-none text-[15px] text-[#c9d1d9] leading-relaxed mb-6">
                         <!-- Using whitespace-pre-line to preserve line breaks if it's plain text, or v-html if HTML -->
                         <p class="whitespace-pre-line">{{ question.body }}</p>
 
@@ -110,13 +108,10 @@
                             v-for="tag in question.tags"
                             :key="tag.id"
                             class="px-2 py-1 bg-[#1f2d3d] text-[#58a6ff] text-[12px] rounded-[3px] hover:bg-[#2c3e50] cursor-pointer transition-colors"
-                            >{{ tag.name }}</span
-                        >
+                        >{{ tag.name }}</span>
                     </div>
                     <!-- Post Actions & User Card -->
-                    <div
-                        class="flex flex-wrap items-center justify-between gap-4 pt-4"
-                    >
+                    <div class="flex flex-wrap items-center justify-between gap-4 pt-4">
                         <div class="flex gap-3 text-[13px] text-[#8b949e]">
                             <button class="hover:text-[#c9d1d9]">Share</button>
                             <button class="hover:text-[#c9d1d9]">Edit</button>
@@ -124,29 +119,21 @@
                         </div>
 
                         <!-- Author Card -->
-                        <div
-                            class="bg-[#161b22] p-2 rounded-[3px] w-48 border border-[#30363d]"
-                        >
+                        <div class="bg-[#161b22] p-2 rounded-[3px] w-48 border border-[#30363d]">
                             <div class="text-[12px] text-[#8b949e] mb-1">
                                 {{ question?.user?.name }}
                                 asked <span class="text-[#c9d1d9]">today</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <div
-                                    class="w-8 h-8 bg-purple-500 rounded-[3px]"
-                                ></div>
+                                <div class="w-8 h-8 bg-purple-500 rounded-[3px]"></div>
                                 <div class="flex flex-col text-[13px]">
                                     <Link
                                         href="#"
                                         class="text-[#58a6ff] hover:text-[#79c0ff]"
-                                        >{{
-                                            question.user?.name || "Anonymous"
-                                        }}</Link
-                                    >
-                                    <span
-                                        class="text-[#c9d1d9] font-bold text-[12px]"
-                                        >125</span
-                                    >
+                                    >{{
+                                        question.user?.name || "Anonymous"
+                                    }}</Link>
+                                    <span class="text-[#c9d1d9] font-bold text-[12px]">125</span>
                                 </div>
                             </div>
                         </div>
@@ -179,10 +166,12 @@
                 class="flex gap-4 border-b border-[#30363d] py-6 last:border-0"
             >
                 <!-- Voting Sidebar -->
-                <div
-                    class="flex flex-col items-center gap-2 w-10 flex-shrink-0"
-                >
+                <div class="flex flex-col items-center gap-2 w-10 flex-shrink-0">
+                    <div class="text-[21px] font-semibold text-[#c9d1d9]">
+                        {{answer.upvotes_count}}
+                    </div>
                     <button
+                        @click="vote('upvote','answer',answer.id)"
                         class="p-2 rounded-full hover:bg-[#21262d] text-[#8b949e] hover:text-[#f78166] transition-colors"
                     >
                         <svg
@@ -194,9 +183,10 @@
                         </svg>
                     </button>
                     <div class="text-[21px] font-semibold text-[#c9d1d9]">
-                        0
+                        {{answer.downvotes_count}}
                     </div>
                     <button
+                        @click="vote('downvote','answer',answer.id)"
                         class="p-2 rounded-full hover:bg-[#21262d] text-[#8b949e] hover:text-[#f78166] transition-colors"
                     >
                         <svg
@@ -208,9 +198,7 @@
                         </svg>
                     </button>
 
-                    <button
-                        class="mt-2 p-2 hover:bg-[#21262d] rounded text-[#8b949e] hover:text-[#c9d1d9]"
-                    >
+                    <button class="mt-2 p-2 hover:bg-[#21262d] rounded text-[#8b949e] hover:text-[#c9d1d9]">
                         <svg
                             class="w-5 h-5"
                             fill="none"
@@ -229,16 +217,12 @@
 
                 <!-- Answer Content -->
                 <div class="flex-1 min-w-0">
-                    <div
-                        class="prose prose-invert max-w-none text-[15px] text-[#c9d1d9] leading-relaxed mb-6"
-                    >
+                    <div class="prose prose-invert max-w-none text-[15px] text-[#c9d1d9] leading-relaxed mb-6">
                         <p class="whitespace-pre-line">{{ answer.body }}</p>
                     </div>
 
                     <!-- Answer Actions & User Card -->
-                    <div
-                        class="flex flex-wrap items-center justify-between gap-4 pt-4"
-                    >
+                    <div class="flex flex-wrap items-center justify-between gap-4 pt-4">
                         <div class="flex gap-3 text-[13px] text-[#8b949e]">
                             <button class="hover:text-[#c9d1d9]">Share</button>
                             <button class="hover:text-[#c9d1d9]">Edit</button>
@@ -246,30 +230,22 @@
                         </div>
 
                         <!-- Author Card -->
-                        <div
-                            class="bg-[#161b22] p-2 rounded-[3px] w-48 border border-[#30363d]"
-                        >
+                        <div class="bg-[#161b22] p-2 rounded-[3px] w-48 border border-[#30363d]">
                             <div class="text-[12px] text-[#8b949e] mb-1">
                                 {{ answer.user?.name }}
                                 answered
                                 <span class="text-[#c9d1d9]">today</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <div
-                                    class="w-8 h-8 bg-green-500 rounded-[3px]"
-                                ></div>
+                                <div class="w-8 h-8 bg-green-500 rounded-[3px]"></div>
                                 <div class="flex flex-col text-[13px]">
                                     <Link
                                         href="#"
                                         class="text-[#58a6ff] hover:text-[#79c0ff]"
-                                        >{{
-                                            answer.user?.name || "Anonymous"
-                                        }}</Link
-                                    >
-                                    <span
-                                        class="text-[#c9d1d9] font-bold text-[12px]"
-                                        >15</span
-                                    >
+                                    >{{
+                                        answer.user?.name || "Anonymous"
+                                    }}</Link>
+                                    <span class="text-[#c9d1d9] font-bold text-[12px]">15</span>
                                 </div>
                             </div>
                         </div>
@@ -298,25 +274,16 @@
                     Your Answer
                 </h2>
                 <div
-                    class="border border-[#30363d] rounded-[3px] bg-[#0d1117] overflow-hidden focus-within:border-[#58a6ff] focus-within:ring-1 focus-within:ring-[#58a6ff]/50 transition-all"
-                >
+                    class="border border-[#30363d] rounded-[3px] bg-[#0d1117] overflow-hidden focus-within:border-[#58a6ff] focus-within:ring-1 focus-within:ring-[#58a6ff]/50 transition-all">
                     <!-- Toolbar Mock -->
-                    <div
-                        class="bg-[#161b22] border-b border-[#30363d] p-2 flex gap-2 overflow-x-auto"
-                    >
-                        <button
-                            class="p-1 text-[#8b949e] hover:bg-[#21262d] rounded"
-                        >
+                    <div class="bg-[#161b22] border-b border-[#30363d] p-2 flex gap-2 overflow-x-auto">
+                        <button class="p-1 text-[#8b949e] hover:bg-[#21262d] rounded">
                             <span class="font-bold font-serif">B</span>
                         </button>
-                        <button
-                            class="p-1 text-[#8b949e] hover:bg-[#21262d] rounded"
-                        >
+                        <button class="p-1 text-[#8b949e] hover:bg-[#21262d] rounded">
                             <span class="italic font-serif">I</span>
                         </button>
-                        <button
-                            class="p-1 text-[#8b949e] hover:bg-[#21262d] rounded"
-                        >
+                        <button class="p-1 text-[#8b949e] hover:bg-[#21262d] rounded">
                             <span class="font-mono">&lt;/&gt;</span>
                         </button>
                     </div>
@@ -352,6 +319,7 @@ import { useForm } from "@inertiajs/vue3";
 export default {
     props: {
         question: Object,
+        userVote: String,
     },
     data() {
         return {
@@ -364,10 +332,20 @@ export default {
     methods: {
         submit() {
             this.form.post("/answers/store", {
-                preserveScroll:true
+                preserveScroll: true
             });
             this.form.reset();
         },
+        vote(value,type,id = null) {
+            const data = {
+                votable_type:type,
+                votable_id: id ?? this.question.id,
+                value
+            }
+            this.$inertia.post("/votes", data, {
+                preserveScroll:true
+            })
+        }
     },
 };
 </script>
@@ -376,13 +354,16 @@ export default {
 ::-webkit-scrollbar {
     width: 10px;
 }
+
 ::-webkit-scrollbar-track {
     background: #0d1117;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #30363d;
     border-radius: 5px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: #58a6ff;
 }
